@@ -47,6 +47,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,6 +57,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="DataConvert.cs" />
+    <Compile Include="DataQuery.cs" />
+    <Compile Include="DataTableHelper.cs" />
+    <Compile Include="Evaluation\AQCICalculate.cs" />
+    <Compile Include="Evaluation\AQCIHelper.cs" />
+    <Compile Include="Evaluation\AQCIReport.cs" />
+    <Compile Include="Evaluation\AQIHelper.cs" />
+    <Compile Include="Evaluation\DayAQICalculate.cs" />
+    <Compile Include="Evaluation\DayAQIReport.cs" />
+    <Compile Include="Evaluation\DayAQIResult.cs" />
+    <Compile Include="Evaluation\HourAQICalculate.cs" />
+    <Compile Include="Evaluation\HourAQIReport.cs" />
+    <Compile Include="Evaluation\HourAQIResult.cs" />
+    <Compile Include="Evaluation\IAirData.cs" />
+    <Compile Include="Evaluation\IAQCICalculate.cs" />
+    <Compile Include="Evaluation\IAQCIReport.cs" />
+    <Compile Include="Evaluation\IAQICalculate.cs" />
+    <Compile Include="Evaluation\IAQIReport.cs" />
+    <Compile Include="Evaluation\IAQIResult.cs" />
+    <Compile Include="FastReflection\ConstructorInvoker.cs" />
+    <Compile Include="FastReflection\ConstructorInvokerCache.cs" />
+    <Compile Include="FastReflection\ConstructorInvokerFactory.cs" />
+    <Compile Include="FastReflection\FastReflectionCache.cs" />
+    <Compile Include="FastReflection\FastReflectionCaches.cs" />
+    <Compile Include="FastReflection\FastReflectionExtensions.cs" />
+    <Compile Include="FastReflection\FastReflectionFactories.cs" />
+    <Compile Include="FastReflection\FieldAccessor.cs" />
+    <Compile Include="FastReflection\FieldAccessorCache.cs" />
+    <Compile Include="FastReflection\FieldAccessorFactory.cs" />
+    <Compile Include="FastReflection\IFastReflectionCache.cs" />
+    <Compile Include="FastReflection\IFastReflectionFactory.cs" />
+    <Compile Include="FastReflection\MethodInvoker.cs" />
+    <Compile Include="FastReflection\MethodInvokerCache.cs" />
+    <Compile Include="FastReflection\MethodInvokerFactory.cs" />
+    <Compile Include="FastReflection\PropertyAccessor.cs" />
+    <Compile Include="FastReflection\PropertyAccessorCache.cs" />
+    <Compile Include="FastReflection\PropertyAccessorFactory.cs" />
+    <Compile Include="SqlHelper.cs" />
     <Compile Include="Suncere\AQIDataPublishLive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Suncere\CityAQIPublishLive.cs" />
