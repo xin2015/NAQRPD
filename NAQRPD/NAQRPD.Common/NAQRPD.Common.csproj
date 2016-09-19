@@ -59,7 +59,6 @@
   <ItemGroup>
     <Compile Include="AQPD.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="DataConvert.cs" />
     <Compile Include="DataQuery.cs" />
     <Compile Include="DataTableHelper.cs" />
     <Compile Include="Evaluation\AQCICalculate.cs" />
