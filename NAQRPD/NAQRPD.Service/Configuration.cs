@@ -15,7 +15,7 @@ namespace NAQRPD.Service
         public static string DefaultCronExpression { get; set; }
         public static string SyncAQMSRDataJobCronExpression { get; set; }
         public static string SyncAQRPCDJobCronExpression { get; set; }
-        public static string FastRecoverDataJobCronExpression { get; set; }
+        public static string FastRecoverRDJobCronExpression { get; set; }
         static Configuration()
         {
             Description = ConfigurationManager.AppSettings["Description"];
@@ -24,7 +24,7 @@ namespace NAQRPD.Service
             DefaultCronExpression = "0 0 0/1 * * ?";
             SyncAQMSRDataJobCronExpression = ConfigurationManager.AppSettings["SyncAQMSRDataJobCronExpression"];
             SyncAQRPCDJobCronExpression = ConfigurationManager.AppSettings["SyncAQRPCDJobCronExpression"];
-            FastRecoverDataJobCronExpression = ConfigurationManager.AppSettings["FastRecoverDataJobCronExpression"];
+            FastRecoverRDJobCronExpression = ConfigurationManager.AppSettings["FastRecoverRDJobCronExpression"];
 
             string defaultService = "SyncService";
             Description = string.IsNullOrWhiteSpace(Description) ? defaultService : Description;

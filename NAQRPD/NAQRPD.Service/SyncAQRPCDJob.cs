@@ -17,18 +17,50 @@ namespace NAQRPD.Service
         private static ILog logger;
         public static string CronExpression { get; set; }
         public static string TableName { get; set; }
+        public static string FastRecoverJob { get; set; }
 
         static SyncAQRPCDJob()
         {
             logger = LogManager.GetLogger<SyncAQRPCDJob>();
             CronExpression = Configuration.SyncAQRPCDJobCronExpression;
             TableName = "AQRPCDLive";
+            FastRecoverJob = "FastRecoverRDJob";
         }
 
         public void Execute(IJobExecutionContext context)
         {
-            Sync();
             Recover();
+            Sync();
+        }
+
+        public static void FastRecover(MissingData missingData)
+        {
+            try
+            {
+                try
+                {
+                    List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
+                    if (list.Any())
+                    {
+                        SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
+                        DataTable dt = list.GetDataTable(TableName);
+                        SqlHelper.Default.Insert(dt);
+                        dt.TableName = TableName.Replace("Live", "History");
+                        SqlHelper.Default.Insert(dt);
+                        missingData.Status = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    missingData.Exception = e.Message;
+                }
+                missingData.Time = DateTime.Now;
+                MissingDataHelper.Update(missingData);
+            }
+            catch (Exception e)
+            {
+                logger.Error("FastRecover failed.", e);
+            }
         }
 
         void Sync()
@@ -36,11 +68,18 @@ namespace NAQRPD.Service
             try
             {
                 List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
-                SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
-                DataTable dt = list.GetDataTable(TableName);
-                SqlHelper.Default.Insert(dt);
-                dt.TableName = TableName.Replace("Live", "History");
-                SqlHelper.Default.Insert(dt);
+                if (list.Any())
+                {
+                    SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
+                    DataTable dt = list.GetDataTable(TableName);
+                    SqlHelper.Default.Insert(dt);
+                    dt.TableName = TableName.Replace("Live", "History");
+                    SqlHelper.Default.Insert(dt);
+                }
+                else
+                {
+                    Fail(new Exception());
+                }
             }
             catch (Exception e)
             {
@@ -52,7 +91,7 @@ namespace NAQRPD.Service
         {
             try
             {
-                List<MissingData> missingDataList = MissingDataHelper.GetList();
+                List<MissingData> missingDataList = MissingDataHelper.GetList(TableName);
                 missingDataList.ForEach(o =>
                 {
                     try
@@ -75,6 +114,11 @@ namespace NAQRPD.Service
                             }
                             SqlHelper.Default.Insert(dt);
                             o.Status = true;
+                        }
+                        else
+                        {
+                            o.MissTimes += 1;
+                            o.Time = DateTime.Now;
                         }
                     }
                     catch (Exception e)

@@ -18,7 +18,7 @@ namespace NAQRPD.Common
             List<AQRPD> list;
             try
             {
-                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2 = '—' then null else SO2 end) SO2,(case when NO2 = '—' then null else NO2 end) NO2,(case when PM10 = '—' then null else PM10 end) PM10,(case when CO = '—' then null else CO end) CO,(case when O3_24h = '—' then null else O3_24h end) O3,(case when PM2_5 = '—' then null else PM2_5 end) PM25,(case when AQI = '—' then null else AQI end) AQI,(case when PrimaryPollutant = '—' then null else PrimaryPollutant end) PrimaryPollutant,(case when Quality = '—' then null else Quality end) Type from AQIDataPublishLive a join StationConfig b on a.StationCode = b.StationCode";
+                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2 = '—' then null else SO2 end) SO2,(case when NO2 = '—' then null else NO2 end) NO2,(case when PM10 = '—' then null else PM10 end) PM10,(case when CO = '—' then null else CO end) CO,(case when O3_24h = '—' then null else O3_24h end) O3,(case when PM2_5 = '—' then null else PM2_5 end) PM25,(case when AQI = '—' then null else AQI end) AQI,(case when PrimaryPollutant = '—' then null else PrimaryPollutant end) PrimaryPollutant,(case when Quality = '—' then null else Quality end) Type from AQIDataPublishLive a join Station b on a.StationCode = b.StationCode";
                 list = SqlHelper.EnvPublish.ExecuteList<AQRPD>(cmdText);
             }
             catch (Exception e)

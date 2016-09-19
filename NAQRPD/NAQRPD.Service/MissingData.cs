@@ -19,27 +19,63 @@ namespace NAQRPD.Service
         public string MCode { get; set; }
         public string PCode { get; set; }
         public DateTime CTime { get; set; }
+
+        public MissingData()
+        {
+            MCode = string.Empty;
+            PCode = string.Empty;
+        }
     }
 
     public class MissingDataHelper
     {
-        static ILog logger = LogManager.GetLogger<MissingDataHelper>();
+        static ILog logger;
+        static string selectByCode;
+        static string selectByTime;
+        static string selectForFastRecover;
+        static string insertOne;
+        static string updateOne;
+        static int maxMissTimes;
+
+        static MissingDataHelper()
+        {
+            logger = LogManager.GetLogger<MissingDataHelper>();
+            string tableName = "MissingData";
+            selectByCode = string.Format("select * from {0} where Code = @Code", tableName);
+            selectByTime = string.Format("select * from {0} where CTime = @CTime", tableName);
+            selectForFastRecover = string.Format("select * from {0} where Status = 0 and MissTimes = 0", tableName);
+            insertOne = string.Format("insert into {0} (Code,Time,MissTimes,Status,Exception,MCode,PCode,CTime) values (@Code,@Time,@MissTimes,@Status,@Exception,@MCode,@PCode,@CTime)", tableName);
+            updateOne = string.Format("update {0} set Time = @Time,MissTimes = @MissTimes,Status = @Status,Exception = @Exception where Code = @Code and CTime = @CTime", tableName);
+            maxMissTimes = 30;
+        }
 
         public static List<MissingData> GetList()
         {
-            List<MissingData> list = new List<MissingData>();
-            //TODO 添加数据获取代码
+            List<MissingData> list;
+            try
+            {
+                list = SqlHelper.Default.ExecuteList<MissingData>(selectForFastRecover);
+            }
+            catch (Exception e)
+            {
+                list = new List<MissingData>();
+                logger.Error("GetList failed.", e);
+            }
             return list;
         }
 
         public static List<MissingData> GetList(string code)
         {
+            return GetList(code, maxMissTimes);
+        }
+
+        public static List<MissingData> GetList(string code, int maxMissTimes)
+        {
             List<MissingData> list;
             try
             {
-                string cmdText = "select * from MissingData where Code = @Code";
                 SqlParameter param = new SqlParameter("@Code", code);
-                list = SqlHelper.Default.ExecuteList<MissingData>(cmdText, param);
+                list = SqlHelper.Default.ExecuteList<MissingData>(selectByCode, param);
             }
             catch (Exception e)
             {
@@ -54,9 +90,8 @@ namespace NAQRPD.Service
             List<MissingData> list;
             try
             {
-                string cmdText = "select * from MissingData where Time = @Time";
-                SqlParameter param = new SqlParameter("@Time", time);
-                list = SqlHelper.Default.ExecuteList<MissingData>(cmdText, param);
+                SqlParameter param = new SqlParameter("@CTime", time);
+                list = SqlHelper.Default.ExecuteList<MissingData>(selectByTime, param);
             }
             catch (Exception e)
             {
@@ -68,12 +103,51 @@ namespace NAQRPD.Service
 
         public static void Insert(MissingData missingData)
         {
-            //TODO 添加插入代码
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@Code",missingData.Code),
+                    new SqlParameter("@Time",missingData.Time),
+                    new SqlParameter("@MissTimes",missingData.MissTimes),
+                    new SqlParameter("@Status",missingData.Status),
+                    new SqlParameter("@Exception",missingData.Exception),
+                    new SqlParameter("@MCode",missingData.MCode),
+                    new SqlParameter("@PCode",missingData.PCode),
+                    new SqlParameter("@CTime",missingData.CTime)
+                };
+                SqlHelper.Default.ExecuteNonQuery(insertOne, parameters);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Insert failed.", e);
+            }
+        }
+
+        public static void Update(MissingData missingData)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@Code",missingData.Code),
+                    new SqlParameter("@Time",missingData.Time),
+                    new SqlParameter("@MissTimes",missingData.MissTimes),
+                    new SqlParameter("@Status",missingData.Status),
+                    new SqlParameter("@Exception",missingData.Exception),
+                    new SqlParameter("@CTime",missingData.CTime)
+                };
+                SqlHelper.Default.ExecuteNonQuery(updateOne, parameters);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Update failed.", e);
+            }
         }
 
         public static void Update(List<MissingData> list)
         {
-            //TODO 添加更新代码
+            list.ForEach(o => Update(o));
         }
 
 
