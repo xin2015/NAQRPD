@@ -12,77 +12,41 @@ namespace NAQRPD.Common
     public static class DataQuery
     {
         static ILog logger = LogManager.GetLogger("DataQuery");
-        static string liveString = "select * from {0}";
-        static string historyString = "select * from {0} where TimePoint between @BeginTime and @EndTime";
 
-        //public static List<T> GetLive<T>(string tableName) where T : class, new()
-        //{
-        //    List<T> list;
-        //    try
-        //    {
-        //        list = SqlHelper.EnvPublish.ExecuteList<T>(string.Format(liveString, tableName));
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        list = new List<T>();
-        //        logger.Error(string.Format("Get {0} failed.", tableName), e);
-        //    }
-        //    return list;
-        //}
-
-        //public static List<T> GetHistory<T>(string tableName, DateTime beginTime, DateTime endTime) where T : class, new()
-        //{
-        //    List<T> list;
-        //    try
-        //    {
-        //        SqlParameter[] parameters = new SqlParameter[] {
-        //            new SqlParameter("@BeginTime",beginTime),
-        //            new SqlParameter("@EndTime",endTime)
-        //        };
-        //        list = SqlHelper.EnvPublish.ExecuteList<T>(string.Format(historyString, tableName), parameters);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        list = new List<T>();
-        //        logger.Error(string.Format("Get {0} failed.", tableName), e);
-        //    }
-        //    return list;
-        //}
-
-        public static DataTable GetLive(string tableName)
+        public static List<AQRPD> GetAQRPCDFromLive()
         {
-            DataTable dt;
+            List<AQRPD> list;
             try
             {
-                dt = SqlHelper.EnvPublish.ExecuteDataTable(string.Format(liveString, tableName));
-                dt.TableName = tableName;
+                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2 = '—' then null else SO2 end) SO2,(case when NO2 = '—' then null else NO2 end) NO2,(case when PM10 = '—' then null else PM10 end) PM10,(case when CO = '—' then null else CO end) CO,(case when O3_24h = '—' then null else O3_24h end) O3,(case when PM2_5 = '—' then null else PM2_5 end) PM25,(case when AQI = '—' then null else AQI end) AQI,(case when PrimaryPollutant = '—' then null else PrimaryPollutant end) PrimaryPollutant,(case when Quality = '—' then null else Quality end) Type from AQIDataPublishLive a join StationConfig b on a.StationCode = b.StationCode";
+                list = SqlHelper.EnvPublish.ExecuteList<AQRPD>(cmdText);
             }
             catch (Exception e)
             {
-                dt = new DataTable();
-                logger.Error(string.Format("Get {0} failed.", tableName), e);
+                list = new List<AQRPD>();
+                logger.Error("GetAQRPCDFromLive failed.", e);
             }
-            return dt;
+            return list;
         }
 
-        public static DataTable GetHistory(string tableName, DateTime beginTime, DateTime endTime)
+        public static List<AQRPD> GetAQRPCDFromHistory(DateTime beginTime, DateTime endTime)
         {
-            DataTable dt;
+            List<AQRPD> list;
             try
             {
-                SqlParameter[] parameters = new SqlParameter[] {
+                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2 = '—' then null else SO2 end) SO2,(case when NO2 = '—' then null else NO2 end) NO2,(case when PM10 = '—' then null else PM10 end) PM10,(case when CO = '—' then null else CO end) CO,(case when O3_24h = '—' then null else O3_24h end) O3,(case when PM2_5 = '—' then null else PM2_5 end) PM25,(case when AQI = '—' then null else AQI end) AQI,(case when PrimaryPollutant = '—' then null else PrimaryPollutant end) PrimaryPollutant,(case when Quality = '—' then null else Quality end) Type from AQIDataPublishHistory a join Station b on a.StationCode = b.StationCode where TimePoint between @BeginTime and @EndTime";
+                SqlParameter[] parameters = new SqlParameter[]{
                     new SqlParameter("@BeginTime",beginTime),
                     new SqlParameter("@EndTime",endTime)
                 };
-                dt = SqlHelper.EnvPublish.ExecuteDataTable(string.Format(historyString, tableName), parameters);
-                dt.TableName = tableName;
+                list = SqlHelper.EnvPublish.ExecuteList<AQRPD>(cmdText, parameters);
             }
             catch (Exception e)
             {
-                dt = new DataTable();
-                logger.Error(string.Format("Get {0} failed.", tableName), e);
+                list = new List<AQRPD>();
+                logger.Error("GetAQRPCDFromHistory failed.", e);
             }
-            return dt;
+            return list;
         }
     }
 }

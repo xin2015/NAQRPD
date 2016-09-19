@@ -35,11 +35,24 @@ namespace NAQRPD.Common.Evaluation
         /// 颗粒物（粒径小于等于2.5μm）平均分指数
         /// </summary>
         int? IPM25 { get; set; }
+        /// <summary>
+        /// 空气质量指数级别
+        /// </summary>
+        string Level { get; set; }
+        /// <summary>
+        /// 空气质量指数类别颜色
+        /// </summary>
+        string Color { get; set; }
 
         /// <summary>
         /// 计算空气质量分指数
         /// </summary>
         void CalculateIAQI();
+
+        /// <summary>
+        /// 计算AQI相关
+        /// </summary>
+        void CalculateAQIAbout();
 
         /// <summary>
         /// 计算空气质量指数日报/实时报

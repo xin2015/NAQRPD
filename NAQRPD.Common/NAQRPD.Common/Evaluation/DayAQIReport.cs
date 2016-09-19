@@ -35,6 +35,14 @@ namespace NAQRPD.Common.Evaluation
         /// 颗粒物（粒径小于等于2.5μm）24小时平均分指数
         /// </summary>
         public int? IPM25 { get; set; }
+        /// <summary>
+        /// 空气质量指数级别
+        /// </summary>
+        public string Level { get; set; }
+        /// <summary>
+        /// 空气质量指数类别颜色
+        /// </summary>
+        public string Color { get; set; }
 
         /// <summary>
         /// 计算空气质量分指数
@@ -42,6 +50,14 @@ namespace NAQRPD.Common.Evaluation
         public virtual void CalculateIAQI()
         {
             AQIHelper.CalculateDayIAQI(this);
+        }
+
+        /// <summary>
+        /// 计算AQI相关（需要已经先计算好空气质量指数类别）
+        /// </summary>
+        public virtual void CalculateAQIAbout()
+        {
+            AQIHelper.CalculateAQIAboutByType(this);
         }
 
         /// <summary>

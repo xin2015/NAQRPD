@@ -20,17 +20,9 @@ namespace NAQRPD.Common.Evaluation
         /// </summary>
         string PrimaryPollutant { get; set; }
         /// <summary>
-        /// 空气质量指数级别
-        /// </summary>
-        string Level { get; set; }
-        /// <summary>
         /// 空气质量指数类别
         /// </summary>
         string Type { get; set; }
-        /// <summary>
-        /// 空气质量指数类别颜色
-        /// </summary>
-        string Color { get; set; }
 
         /// <summary>
         /// 计算空气质量指数

@@ -44,28 +44,9 @@ namespace NAQRPD.Common.Evaluation
         /// </summary>
         public string PrimaryPollutant { get; set; }
         /// <summary>
-        /// 空气质量指数级别
-        /// </summary>
-        public string Level { get; set; }
-        /// <summary>
         /// 空气质量指数类别
         /// </summary>
         public string Type { get; set; }
-        /// <summary>
-        /// 空气质量指数类别颜色
-        /// </summary>
-        public string Color { get; set; }
-
-        /// <summary>
-        /// 构造函数（赋初值）
-        /// </summary>
-        public DayAQICalculate()
-        {
-            PrimaryPollutant = AQIHelper.EmptyValueString;
-            Level = AQIHelper.EmptyValueString;
-            Type = AQIHelper.EmptyValueString;
-            Color = AQIHelper.EmptyValueString;
-        }
 
         /// <summary>
         /// 计算空气质量指数

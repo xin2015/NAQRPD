@@ -25,21 +25,19 @@ namespace NAQRPD.Common.Evaluation
         public string NonAttainmentPollutant { get; set; }
 
         /// <summary>
-        /// 构造函数（赋初值）
-        /// </summary>
-        public HourAQIResult()
-        {
-            Effect = AQIHelper.EmptyValueString;
-            Measure = AQIHelper.EmptyValueString;
-            NonAttainmentPollutant = AQIHelper.EmptyValueString;
-        }
-
-        /// <summary>
-        /// 计算对健康影响情况和建议采取的措施
+        /// 计算对健康影响情况和建议采取的措施（需要已经先计算好空气质量指数类别）
         /// </summary>
         public virtual void CalculateEffectAndMeasure()
         {
-            AQIHelper.CalculateEffectAndMeasure(this);
+            AQIHelper.CalculateEffectAndMeasureByType(this);
+        }
+
+        /// <summary>
+        /// 计算AQI相关（需要已经先计算好空气质量指数类别）
+        /// </summary>
+        public override void CalculateAQIAbout()
+        {
+            AQIHelper.CalculateAQIAboutByType(this);
         }
 
         /// <summary>

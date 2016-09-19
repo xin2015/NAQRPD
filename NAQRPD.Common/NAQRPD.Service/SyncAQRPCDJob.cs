@@ -22,7 +22,7 @@ namespace NAQRPD.Service
         {
             logger = LogManager.GetLogger<SyncAQRPCDJob>();
             CronExpression = Configuration.SyncAQRPCDJobCronExpression;
-            TableName = "AQIDataPublishLive";
+            TableName = "AQRPCDLive";
         }
 
         public void Execute(IJobExecutionContext context)
@@ -35,18 +35,12 @@ namespace NAQRPD.Service
         {
             try
             {
-                DataTable dt = DataQuery.GetLive(TableName);
-                List<AQIDataPublishLive> liveList = dt.GetList<AQIDataPublishLive>();
-                List<HourAQICalculate> list = DataConvert.ToHourAQICalculate(liveList);
+                List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
                 SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
+                DataTable dt = list.GetDataTable(TableName);
                 SqlHelper.Default.Insert(dt);
-            }
-            catch (System.Data.SqlClient.SqlException e)
-            {
-                if (!e.Message.Contains("插入重复键"))
-                {
-                    Fail(e);
-                }
+                dt.TableName = TableName.Replace("Live", "History");
+                SqlHelper.Default.Insert(dt);
             }
             catch (Exception e)
             {
@@ -63,9 +57,25 @@ namespace NAQRPD.Service
                 {
                     try
                     {
-                        List<HourAQIReport> list = GetHistoryData(o);
-                        SqlHelper.Default.Insert(list.GetDataTable(TableName));
-                        o.Status = true;
+                        List<AQRPD> list = DataQuery.GetAQRPCDFromHistory(o.CTime, o.CTime);
+                        if (list.Any())
+                        {
+                            DateTime liveTime = DateTime.Now;
+                            DataTable dt;
+                            if (list.First().Time > liveTime)
+                            {
+                                SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
+                                dt = list.GetDataTable(TableName);
+                                SqlHelper.Default.Insert(dt);
+                                dt.TableName = TableName.Replace("Live", "History");
+                            }
+                            else
+                            {
+                                dt = list.GetDataTable(TableName.Replace("Live", "History"));
+                            }
+                            SqlHelper.Default.Insert(dt);
+                            o.Status = true;
+                        }
                     }
                     catch (Exception e)
                     {
@@ -78,7 +88,7 @@ namespace NAQRPD.Service
             }
             catch (Exception e)
             {
-                logger.Error("SyncAQMCRDataJob.Recover failed.", e);
+                logger.Error("SyncAQRPCDJob.Recover failed.", e);
             }
         }
 
@@ -90,21 +100,7 @@ namespace NAQRPD.Service
             missingData.CTime = DateTime.Today.AddHours(DateTime.Now.Hour);
             missingData.Exception = e.Message;
             MissingDataHelper.Insert(missingData);
-            logger.Error("SyncAQMCRData failed.", e);
-        }
-
-        List<HourAQIReport> GetRealtimeData()
-        {
-            List<HourAQIReport> list = new List<HourAQIReport>();
-            //TODO 添加数据获取代码
-            return list;
-        }
-
-        List<HourAQIReport> GetHistoryData(object condition)
-        {
-            List<HourAQIReport> list = new List<HourAQIReport>();
-            //TODO 添加数据获取代码
-            return list;
+            logger.Error("SyncAQRPCD failed.", e);
         }
     }
 }
