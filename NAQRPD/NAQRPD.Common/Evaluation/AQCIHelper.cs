@@ -13,10 +13,6 @@ namespace NAQRPD.Common.Evaluation
     public class AQCIHelper
     {
         /// <summary>
-        /// 污染物监测项字典（用于首要污染物）
-        /// </summary>
-        private static Dictionary<string, string> pollutantDic;
-        /// <summary>
         /// IAirData属性
         /// </summary>
         private static PropertyInfo[] IAirDataProperties;
@@ -34,21 +30,7 @@ namespace NAQRPD.Common.Evaluation
         /// </summary>
         static AQCIHelper()
         {
-            pollutantDic = new Dictionary<string, string>(){
-                {"SO2","二氧化硫"},
-                {"NO2","二氧化氮"},
-                {"PM10","颗粒物"},
-                {"CO","一氧化碳"},
-                {"O3","臭氧"},
-                {"PM25","细颗粒物"}
-            };
             IAirDataProperties = typeof(IAirData).GetProperties();
-            PropertyInfo[] IAQCIReportProperties = typeof(IAQCIReport).GetProperties();
-            IAQCIPropertiesDic = new Dictionary<string, PropertyInfo>();
-            foreach (string pollutant in pollutantDic.Keys)
-            {
-                IAQCIPropertiesDic.Add(pollutant, IAQCIReportProperties.First(o => o.Name == string.Format("I{0}", pollutant)));
-            }
             limitDic = new Dictionary<string, int>(){
                 {"SO2",60},
                 {"NO2",40},
@@ -57,6 +39,13 @@ namespace NAQRPD.Common.Evaluation
                 {"O3",160},
                 {"PM25",35}
             };
+            PropertyInfo[] IAQCIReportProperties = typeof(IAQCIReport).GetProperties();
+            IAQCIPropertiesDic = new Dictionary<string, PropertyInfo>();
+            foreach (string pollutant in limitDic.Keys)
+            {
+                IAQCIPropertiesDic.Add(pollutant, IAQCIReportProperties.First(o => o.Name == string.Format("I{0}", pollutant)));
+            }
+
         }
 
         #region 私有方法
@@ -91,7 +80,7 @@ namespace NAQRPD.Common.Evaluation
             {
                 data.AQCI = IAQCIDic.Sum(o => o.Value);
                 data.AQMI = IAQCIDic.Max(o => o.Value);
-                data.PrimaryPollutant = string.Join(",", pollutantDic.Where(o => IAQCIDic.Where(t => t.Value == data.AQMI).Select(t => t.Key).Contains(o.Key)).Select(o => o.Value));
+                data.PrimaryPollutant = string.Join(",", IAQCIDic.Where(t => t.Value == data.AQMI).Select(t => t.Key));
             }
         }
 
