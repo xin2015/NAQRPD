@@ -94,7 +94,7 @@ namespace NAQRPD.Service
                 {
                     try
                     {
-                        List<AQDPD> list = DataQuery.GetAQDPCDFromHistory(o.CTime, o.CTime);
+                        List<AQDPD> list = DataQuery.GetAQDPCDFromHistory(o.CTime);
                         if (list.Any())
                         {
                             DateTime liveTime = DataQuery.GetLiveTime(TableName);

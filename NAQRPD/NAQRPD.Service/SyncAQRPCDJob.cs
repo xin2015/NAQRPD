@@ -1,7 +1,5 @@
 ﻿using Common.Logging;
 using NAQRPD.Common;
-using NAQRPD.Common.Evaluation;
-using NAQRPD.Common.Suncere;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -96,7 +94,7 @@ namespace NAQRPD.Service
                 {
                     try
                     {
-                        List<AQRPD> list = DataQuery.GetAQRPCDFromHistory(o.CTime, o.CTime);
+                        List<AQRPD> list = DataQuery.GetAQRPCDFromHistory(o.CTime);
                         if (list.Any())
                         {
                             DateTime liveTime = DataQuery.GetLiveTime(TableName);
