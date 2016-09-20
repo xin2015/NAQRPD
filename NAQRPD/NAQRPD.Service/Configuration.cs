@@ -12,19 +12,23 @@ namespace NAQRPD.Service
         public static string Description { get; set; }
         public static string DisplayName { get; set; }
         public static string ServiceName { get; set; }
-        public static string DefaultCronExpression { get; set; }
-        public static string SyncAQMSRDataJobCronExpression { get; set; }
+        public static string SyncAQRPSDJobCronExpression { get; set; }
         public static string SyncAQRPCDJobCronExpression { get; set; }
+        public static string SyncAQDPSDJobCronExpression { get; set; }
+        public static string SyncAQDPCDJobCronExpression { get; set; }
         public static string FastRecoverRDJobCronExpression { get; set; }
+        public static string FastRecoverDDJobCronExpression { get; set; }
         static Configuration()
         {
             Description = ConfigurationManager.AppSettings["Description"];
             DisplayName = ConfigurationManager.AppSettings["DisplayName"];
             ServiceName = ConfigurationManager.AppSettings["ServiceName"];
-            DefaultCronExpression = "0 0 0/1 * * ?";
-            SyncAQMSRDataJobCronExpression = ConfigurationManager.AppSettings["SyncAQMSRDataJobCronExpression"];
+            SyncAQRPSDJobCronExpression = ConfigurationManager.AppSettings["SyncAQRPSDJobCronExpression"];
             SyncAQRPCDJobCronExpression = ConfigurationManager.AppSettings["SyncAQRPCDJobCronExpression"];
+            SyncAQDPSDJobCronExpression = ConfigurationManager.AppSettings["SyncAQDPSDJobCronExpression"];
+            SyncAQDPCDJobCronExpression = ConfigurationManager.AppSettings["SyncAQDPCDJobCronExpression"];
             FastRecoverRDJobCronExpression = ConfigurationManager.AppSettings["FastRecoverRDJobCronExpression"];
+            FastRecoverDDJobCronExpression = ConfigurationManager.AppSettings["FastRecoverDDJobCronExpression"];
 
             string defaultService = "SyncService";
             Description = string.IsNullOrWhiteSpace(Description) ? defaultService : Description;

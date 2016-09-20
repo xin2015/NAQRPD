@@ -1,7 +1,5 @@
 ﻿using Common.Logging;
 using NAQRPD.Common;
-using NAQRPD.Common.Evaluation;
-using NAQRPD.Common.Suncere;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -12,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace NAQRPD.Service
 {
-    class SyncAQRPCDJob : IJob
+    class SyncAQRPSDJob : IJob
     {
         private static ILog logger;
         public static string CronExpression { get; set; }
         public static string TableName { get; set; }
         public static string FastRecoverJob { get; set; }
 
-        static SyncAQRPCDJob()
+        static SyncAQRPSDJob()
         {
-            logger = LogManager.GetLogger<SyncAQRPCDJob>();
-            CronExpression = Configuration.SyncAQRPCDJobCronExpression;
-            TableName = "AQRPCDLive";
+            logger = LogManager.GetLogger<SyncAQRPSDJob>();
+            CronExpression = Configuration.SyncAQRPSDJobCronExpression;
+            TableName = "AQRPSDLive";
             FastRecoverJob = "FastRecoverRDJob";
         }
 
@@ -39,7 +37,7 @@ namespace NAQRPD.Service
             {
                 try
                 {
-                    List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
+                    List<AQRPD> list = DataQuery.GetAQRPSDFromLive();
                     if (list.Any())
                     {
                         SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
@@ -48,6 +46,14 @@ namespace NAQRPD.Service
                         dt.TableName = TableName.Replace("Live", "History");
                         SqlHelper.Default.Insert(dt);
                         missingData.Status = true;
+                    }
+                    List<AQDPD> slideList = DataQuery.GetAQSPSDFromLive();
+                    if (slideList.Any())
+                    {
+                        string tableName = "AQSPSDLive";
+                        SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", tableName));
+                        DataTable dt = slideList.GetDataTable(tableName);
+                        SqlHelper.Default.Insert(dt);
                     }
                 }
                 catch (Exception e)
@@ -67,7 +73,7 @@ namespace NAQRPD.Service
         {
             try
             {
-                List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
+                List<AQRPD> list = DataQuery.GetAQRPSDFromLive();
                 if (list.Any())
                 {
                     SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
@@ -79,6 +85,14 @@ namespace NAQRPD.Service
                 else
                 {
                     Fail(new Exception());
+                }
+                List<AQDPD> slideList = DataQuery.GetAQSPSDFromLive();
+                if (slideList.Any())
+                {
+                    string tableName = "AQSPSDLive";
+                    SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", tableName));
+                    DataTable dt = slideList.GetDataTable(tableName);
+                    SqlHelper.Default.Insert(dt);
                 }
             }
             catch (Exception e)
@@ -96,7 +110,7 @@ namespace NAQRPD.Service
                 {
                     try
                     {
-                        List<AQRPD> list = DataQuery.GetAQRPCDFromHistory(o.CTime, o.CTime);
+                        List<AQRPD> list = DataQuery.GetAQRPSDFromHistory(o.CTime, o.CTime);
                         if (list.Any())
                         {
                             DateTime liveTime = DataQuery.GetLiveTime(TableName);
@@ -120,6 +134,18 @@ namespace NAQRPD.Service
                             o.MissTimes += 1;
                             o.Time = DateTime.Now;
                         }
+                        List<AQDPD> slideList = DataQuery.GetAQSPSDFromHistory(o.CTime);
+                        if (slideList.Any())
+                        {
+                            string tableName = "AQSPSDLive";
+                            DateTime liveTime = DataQuery.GetLiveTime(tableName);
+                            if (slideList.First().Time > liveTime)
+                            {
+                                SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", tableName));
+                                DataTable dt = slideList.GetDataTable(tableName);
+                                SqlHelper.Default.Insert(dt);
+                            }
+                        }
                     }
                     catch (Exception e)
                     {
@@ -132,7 +158,7 @@ namespace NAQRPD.Service
             }
             catch (Exception e)
             {
-                logger.Error("SyncAQRPCDJob.Recover failed.", e);
+                logger.Error("SyncAQRPSDJob.Recover failed.", e);
             }
         }
 
@@ -144,7 +170,7 @@ namespace NAQRPD.Service
             missingData.CTime = DateTime.Today.AddHours(DateTime.Now.Hour);
             missingData.Exception = e.Message;
             MissingDataHelper.Insert(missingData);
-            logger.Error("SyncAQRPCD failed.", e);
+            logger.Error("SyncAQRPSD failed.", e);
         }
     }
 }

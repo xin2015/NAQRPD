@@ -68,11 +68,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="FastRecoverDDJob.cs" />
     <Compile Include="FastRecoverRDJob.cs" />
     <Compile Include="MissingData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyncAQDPCDJob.cs" />
+    <Compile Include="SyncAQDPSDJob.cs" />
     <Compile Include="SyncAQRPCDJob.cs" />
+    <Compile Include="SyncAQRPSDJob.cs" />
     <Compile Include="SyncService.cs" />
   </ItemGroup>
   <ItemGroup>

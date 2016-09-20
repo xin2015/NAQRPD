@@ -1,7 +1,5 @@
 ﻿using Common.Logging;
 using NAQRPD.Common;
-using NAQRPD.Common.Evaluation;
-using NAQRPD.Common.Suncere;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -12,19 +10,19 @@ using System.Threading.Tasks;
 
 namespace NAQRPD.Service
 {
-    class SyncAQRPCDJob : IJob
+    class SyncAQDPCDJob : IJob
     {
         private static ILog logger;
         public static string CronExpression { get; set; }
         public static string TableName { get; set; }
         public static string FastRecoverJob { get; set; }
 
-        static SyncAQRPCDJob()
+        static SyncAQDPCDJob()
         {
-            logger = LogManager.GetLogger<SyncAQRPCDJob>();
-            CronExpression = Configuration.SyncAQRPCDJobCronExpression;
-            TableName = "AQRPCDLive";
-            FastRecoverJob = "FastRecoverRDJob";
+            logger = LogManager.GetLogger<SyncAQDPCDJob>();
+            CronExpression = Configuration.SyncAQDPCDJobCronExpression;
+            TableName = "AQDPCDLive";
+            FastRecoverJob = "FastRecoverDDJob";
         }
 
         public void Execute(IJobExecutionContext context)
@@ -39,7 +37,7 @@ namespace NAQRPD.Service
             {
                 try
                 {
-                    List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
+                    List<AQDPD> list = DataQuery.GetAQDPCDFromLive();
                     if (list.Any())
                     {
                         SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
@@ -67,7 +65,7 @@ namespace NAQRPD.Service
         {
             try
             {
-                List<AQRPD> list = DataQuery.GetAQRPCDFromLive();
+                List<AQDPD> list = DataQuery.GetAQDPCDFromLive();
                 if (list.Any())
                 {
                     SqlHelper.Default.ExecuteNonQuery(string.Format("delete {0}", TableName));
@@ -96,7 +94,7 @@ namespace NAQRPD.Service
                 {
                     try
                     {
-                        List<AQRPD> list = DataQuery.GetAQRPCDFromHistory(o.CTime, o.CTime);
+                        List<AQDPD> list = DataQuery.GetAQDPCDFromHistory(o.CTime, o.CTime);
                         if (list.Any())
                         {
                             DateTime liveTime = DataQuery.GetLiveTime(TableName);
@@ -132,7 +130,7 @@ namespace NAQRPD.Service
             }
             catch (Exception e)
             {
-                logger.Error("SyncAQRPCDJob.Recover failed.", e);
+                logger.Error("SyncAQDPCDJob.Recover failed.", e);
             }
         }
 
@@ -141,10 +139,10 @@ namespace NAQRPD.Service
             MissingData missingData = new MissingData();
             missingData.Code = TableName;
             missingData.Time = DateTime.Now;
-            missingData.CTime = DateTime.Today.AddHours(DateTime.Now.Hour);
+            missingData.CTime = DateTime.Today.AddDays(-1);
             missingData.Exception = e.Message;
             MissingDataHelper.Insert(missingData);
-            logger.Error("SyncAQRPCD failed.", e);
+            logger.Error("SyncAQDPCD failed.", e);
         }
     }
 }
