@@ -145,7 +145,7 @@ namespace NAQRPD.Common
             List<AQDPD> list;
             try
             {
-                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2_24h = '—' then null else SO2_24h end) SO2,(case when NO2_24h = '—' then null else NO2_24h end) NO2,(case when PM10_24h = '—' then null else PM10_24h end) PM10,(case when CO_24h = '—' then null else CO_24h end) CO,(case when O3_8h = '—' then null else O3_8h end) O3,(case when PM2_5_24h = '—' then null else PM2_5_24h end) PM25 from AQIDataPublishLive a join StationConfig b on a.StationCode = b.StationCode";
+                string cmdText = "select UniqueCode Code,dateadd(day, -1, TimePoint) Time,(case when SO2_24h = '—' then null else SO2_24h end) SO2,(case when NO2_24h = '—' then null else NO2_24h end) NO2,(case when PM10_24h = '—' then null else PM10_24h end) PM10,(case when CO_24h = '—' then null else CO_24h end) CO,(case when O3_8h = '—' then null else O3_8h end) O3,(case when PM2_5_24h = '—' then null else PM2_5_24h end) PM25 from AQIDataPublishLive a join StationConfig b on a.StationCode = b.StationCode";
                 list = SqlHelper.EnvPublish.ExecuteList<AQDPD>(cmdText);
                 list.ForEach(o => o.CalculateAQI());
             }
@@ -162,7 +162,7 @@ namespace NAQRPD.Common
             List<AQDPD> list;
             try
             {
-                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2_24h = '—' then null else SO2_24h end) SO2,(case when NO2_24h = '—' then null else NO2_24h end) NO2,(case when PM10_24h = '—' then null else PM10_24h end) PM10,(case when CO_24h = '—' then null else CO_24h end) CO,(case when O3_8h = '—' then null else O3_8h end) O3,(case when PM2_5_24h = '—' then null else PM2_5_24h end) PM25 from AQIDataPublishHistory a join StationConfig b on a.StationCode = b.StationCode where TimePoint = @TimePoint";
+                string cmdText = "select UniqueCode Code,dateadd(day, -1, TimePoint) Time,(case when SO2_24h = '—' then null else SO2_24h end) SO2,(case when NO2_24h = '—' then null else NO2_24h end) NO2,(case when PM10_24h = '—' then null else PM10_24h end) PM10,(case when CO_24h = '—' then null else CO_24h end) CO,(case when O3_8h = '—' then null else O3_8h end) O3,(case when PM2_5_24h = '—' then null else PM2_5_24h end) PM25 from AQIDataPublishHistory a join StationConfig b on a.StationCode = b.StationCode where TimePoint = @TimePoint";
                 SqlParameter param = new SqlParameter("@TimePoint", time);
                 list = SqlHelper.EnvPublish.ExecuteList<AQDPD>(cmdText, param);
                 list.ForEach(o => o.CalculateAQI());
@@ -180,7 +180,7 @@ namespace NAQRPD.Common
             List<AQDPD> list;
             try
             {
-                string cmdText = "select UniqueCode Code,TimePoint Time,(case when SO2_24h = '—' then null else SO2_24h end) SO2,(case when NO2_24h = '—' then null else NO2_24h end) NO2,(case when PM10_24h = '—' then null else PM10_24h end) PM10,(case when CO_24h = '—' then null else CO_24h end) CO,(case when O3_8h = '—' then null else O3_8h end) O3,(case when PM2_5_24h = '—' then null else PM2_5_24h end) PM25 from AQIDataPublishHistory a join StationConfig b on a.StationCode = b.StationCode where TimePoint between @BeginTime and @EndTime and datepart(Hour,TimePoint) = 0";
+                string cmdText = "select UniqueCode Code,dateadd(day, -1, TimePoint) Time,(case when SO2_24h = '—' then null else SO2_24h end) SO2,(case when NO2_24h = '—' then null else NO2_24h end) NO2,(case when PM10_24h = '—' then null else PM10_24h end) PM10,(case when CO_24h = '—' then null else CO_24h end) CO,(case when O3_8h = '—' then null else O3_8h end) O3,(case when PM2_5_24h = '—' then null else PM2_5_24h end) PM25 from AQIDataPublishHistory a join StationConfig b on a.StationCode = b.StationCode where TimePoint between @BeginTime and @EndTime and datepart(Hour,TimePoint) = 0";
                 SqlParameter[] parameters = new SqlParameter[]{
                     new SqlParameter("@BeginTime",beginTime),
                     new SqlParameter("@EndTime",endTime)
