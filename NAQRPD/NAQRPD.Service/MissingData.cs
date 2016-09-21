@@ -41,8 +41,8 @@ namespace NAQRPD.Service
         {
             logger = LogManager.GetLogger<MissingDataHelper>();
             string tableName = "MissingData";
-            selectByCode = string.Format("select * from {0} where Code = @Code", tableName);
-            selectByTime = string.Format("select * from {0} where CTime = @CTime", tableName);
+            selectByCode = string.Format("select * from {0} where Code = @Code and Status = 0", tableName);
+            selectByTime = string.Format("select * from {0} where CTime = @CTime and Status = 0", tableName);
             selectForFastRecover = string.Format("select * from {0} where Status = 0 and MissTimes = 0", tableName);
             insertOne = string.Format("insert into {0} (Code,Time,MissTimes,Status,Exception,MCode,PCode,CTime) values (@Code,@Time,@MissTimes,@Status,@Exception,@MCode,@PCode,@CTime)", tableName);
             updateOne = string.Format("update {0} set Time = @Time,MissTimes = @MissTimes,Status = @Status,Exception = @Exception where Code = @Code and CTime = @CTime", tableName);
