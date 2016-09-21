@@ -77,6 +77,7 @@
     <Compile Include="SyncAQDPSDJob.cs" />
     <Compile Include="SyncAQRPCDJob.cs" />
     <Compile Include="SyncAQRPSDJob.cs" />
+    <Compile Include="SyncOtherDJob.cs" />
     <Compile Include="SyncService.cs" />
   </ItemGroup>
   <ItemGroup>
