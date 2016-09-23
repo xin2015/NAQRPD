@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AQPD.cs" />
+    <Compile Include="AQPDView.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DataQuery.cs" />
     <Compile Include="DataTableHelper.cs" />

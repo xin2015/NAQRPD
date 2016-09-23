@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAQRPD.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,8 +11,11 @@ namespace NAQRPD.Web.Controllers
     {
         public ActionResult Index()
         {
+            List<AQRPDView> list = DataQuery.GetLive<AQRPDView>("View_AQRPCDLive");
             return View();
         }
+
+
 
         public ActionResult About()
         {
