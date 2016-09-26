@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "城市实时发布数据";
+    ViewBag.Title = "站点实时发布数据";
 }
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -127,12 +127,12 @@
         }
 
         $.ajax({
-            url: '/Home/GetIndexData',
+            url: '/Home/GetStationRealtimePublishData',
         }).done(function (jsonData) {
             data = jsonData;
             option.series[0].data = GetSeriesData("AQI");
-            if (data.length > 0) option.title.text = '全国主要城市空气质量实时发布数据（' + GetTimeFromJsonString(data[0].Time).ToString("yyyy-MM-dd HH:mm") + '）';
-            else option.title.text = '全国主要城市空气质量实时发布数据（' + new Date().ToString("yyyy-MM-dd HH:mm") + '）';
+            if (data.length > 0) option.title.text = '全国主要站点空气质量实时发布数据（' + GetTimeFromJsonString(data[0].Time).ToString("yyyy-MM-dd HH:mm") + '）';
+            else option.title.text = '全国主要站点空气质量实时发布数据（' + new Date().ToString("yyyy-MM-dd HH:mm") + '）';
             myChart.setOption(option);
             $(document).ready(function () {
                 var pollutantConst = new PollutantConst();

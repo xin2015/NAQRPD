@@ -11,11 +11,55 @@ namespace NAQRPD.Web.Controllers
     {
         public ActionResult Index()
         {
-            List<AQRPDView> list = DataQuery.GetLive<AQRPDView>("View_AQRPCDLive");
             return View();
         }
 
+        public JsonResult GetIndexData()
+        {
+            List<AQRPDView> list;
+            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/Index") list = DataQuery.GetLive<AQRPDView>("View_AQRPCDLive");
+            else list = new List<AQRPDView>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
 
+        public ActionResult CityDayPublish()
+        {
+            return View();
+        }
+
+        public JsonResult GetCityDayPublishData()
+        {
+            List<AQDPDView> list;
+            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/CityDayPublish") list = DataQuery.GetLive<AQDPDView>("View_AQDPCDLive");
+            else list = new List<AQDPDView>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult StationRealtimePublish()
+        {
+            return View();
+        }
+
+        public JsonResult GetStationRealtimePublishData()
+        {
+            List<AQRPDView> list;
+            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/StationRealtimePublish") list = DataQuery.GetLive<AQRPDView>("View_AQRPSDLive");
+            else list = new List<AQRPDView>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult StationDayPublish()
+        {
+            return View();
+        }
+
+        public JsonResult GetStationDayPublishData()
+        {
+            List<AQDPDView> list;
+            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/StationDayPublish") list = DataQuery.GetLive<AQDPDView>("View_AQDPSDLive");
+            else list = new List<AQDPDView>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult About()
         {
