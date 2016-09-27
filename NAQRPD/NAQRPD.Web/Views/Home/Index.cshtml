@@ -28,6 +28,7 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+@Html.DropDownList("Province", NAQRPD.Web.Models.DataQuery.GetProvinceSelectList(), "", new { @class = "form-control" })
 <div id="chart" style="height:800px;"></div>
 @section scripts{
     <script src="~/Scripts/echarts/dist/echarts.min.js"></script>
