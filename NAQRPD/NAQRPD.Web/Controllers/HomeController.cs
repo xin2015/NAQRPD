@@ -1,4 +1,5 @@
-﻿using NAQRPD.Common;
+﻿using Common.Logging;
+using NAQRPD.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,17 @@ namespace NAQRPD.Web.Controllers
 {
     public class HomeController : Controller
     {
+        static ILog logger = LogManager.GetLogger<HomeController>();
+        static Dictionary<string, int> dic = new Dictionary<string, int>();
+
+        private bool Validate()
+        {
+            if (dic.ContainsKey(Request.UserHostAddress)) dic[Request.UserHostAddress]++;
+            else dic[Request.UserHostAddress] = 1;
+            if (dic[Request.UserHostAddress] % 100 == 0) logger.InfoFormat("{0}：{1}", Request.UserHostAddress, dic[Request.UserHostAddress]);
+            return dic[Request.UserHostAddress] < 30000 && Request.Url.Host == Request.UrlReferrer.Host;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -17,7 +29,7 @@ namespace NAQRPD.Web.Controllers
         public JsonResult GetIndexData()
         {
             List<AQRPDView> list;
-            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/Index") list = DataQuery.GetLive<AQRPDView>("View_AQRPCDLive");
+            if (Validate()) list = DataQuery.GetLive<AQRPDView>("View_AQRPCDLive");
             else list = new List<AQRPDView>();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
@@ -30,7 +42,7 @@ namespace NAQRPD.Web.Controllers
         public JsonResult GetCityDayPublishData()
         {
             List<AQDPDView> list;
-            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/CityDayPublish") list = DataQuery.GetLive<AQDPDView>("View_AQDPCDLive");
+            if (Validate()) list = DataQuery.GetLive<AQDPDView>("View_AQDPCDLive");
             else list = new List<AQDPDView>();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
@@ -43,7 +55,7 @@ namespace NAQRPD.Web.Controllers
         public JsonResult GetStationRealtimePublishData()
         {
             List<AQRPDView> list;
-            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/StationRealtimePublish") list = DataQuery.GetLive<AQRPDView>("View_AQRPSDLive");
+            if (Validate()) list = DataQuery.GetLive<AQRPDView>("View_AQRPSDLive");
             else list = new List<AQRPDView>();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
@@ -56,7 +68,7 @@ namespace NAQRPD.Web.Controllers
         public JsonResult GetStationDayPublishData()
         {
             List<AQDPDView> list;
-            if (HttpContext.Request.UrlReferrer.AbsoluteUri == "http://cityphoto.suncereltd.cn:18407/Home/StationDayPublish") list = DataQuery.GetLive<AQDPDView>("View_AQDPSDLive");
+            if (Validate()) list = DataQuery.GetLive<AQDPDView>("View_AQDPSDLive");
             else list = new List<AQDPDView>();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
