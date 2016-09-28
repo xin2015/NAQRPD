@@ -1,33 +1,20 @@
 ﻿@{
     ViewBag.Title = "城市实时发布数据";
 }
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            @*<a class="navbar-brand" href="#">Brand</a>*@
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.Label("监测项", new { @class = "col-sm-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownList("Pollutant", NAQRPD.Web.Models.DataQuery.GetPollutantSelectList(), "", new { @class = "form-control" })
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul id="pollutantNav" class="nav navbar-nav">
-                <li role="presentation" class="active" name="AQI"><a href="#">AQI</a></li>
-                <li role="presentation" name="SO2"><a href="#">SO<sub>2</sub></a></li>
-                <li role="presentation" name="NO2"><a href="#">NO<sub>2</sub></a></li>
-                <li role="presentation" name="PM10"><a href="#">PM<sub>10</sub></a></li>
-                <li role="presentation" name="CO"><a href="#">CO</a></li>
-                <li role="presentation" name="O3"><a href="#">O<sub>3</sub></a></li>
-                <li role="presentation" name="PM25"><a href="#">PM<sub>2.5</sub></a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
+    </div>
+    <div class="form-group">
+        @Html.Label("省份", new { @class = "col-sm-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownList("Province", NAQRPD.Web.Models.DataQuery.GetProvinceSelectList(), "", new { @class = "form-control" })
+        </div>
+    </div>
+</div>
 <div id="chart" style="height:800px;"></div>
 @section scripts{
     <script src="~/Scripts/echarts/dist/echarts.min.js"></script>
